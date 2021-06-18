@@ -7,16 +7,20 @@ const userRoute = require("./routes/users");
 const postsRoute = require("./routes/posts");
 const categorieRoute = require("./routes/categories");
 const multer = require("multer");
+const path = require("path");
 
 
 
 dotenv.config();
 app.use(express.json());
+app.use("/images/", express.static(path.join(__dirname, "/images/")));
 
 mongoose.connect(process.env.MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex:true,
+        useFindAndModify:true,
+       
     }).then(console.log("connected to mongodb"))
     .catch((err)=>console.log(err));
 
@@ -25,7 +29,7 @@ mongoose.connect(process.env.MONGO_URL, {
           cb(null, "images");
         },
         filename: (req, file, cb) => {
-          cb(null, "hello.jpg");
+          cb(null, req.body.name);
         },
       });
   const upload = multer({ storage: storage });
